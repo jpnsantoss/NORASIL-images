@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import { errorHandler } from './middlewares/errorHandler';
+import { errorHandler } from './middleware/errorHandler';
 import imageRoutes from './routes/imageRoutes';
 
 const app = express();
