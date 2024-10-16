@@ -1,11 +1,6 @@
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: norasil-images
-    ports:
-      - "8080:8080"
+    image: ghcr.io/jpnsantoss/norasil-images:prod
     secrets:
       - db-password
     environment:
@@ -15,14 +10,17 @@ services:
       - POSTGRES_DB=images
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=disable
+    deploy:
+      mode: replicated
+      replicas: 3
+    restart: always
     depends_on:
       db:
         condition: service_healthy
-
   db:
-    image: postgres:latest
+    image: postgres
     restart: always
-    container_name: norasil-db
+    user: postgres
     secrets:
       - db-password
     volumes:
@@ -33,15 +31,13 @@ services:
     expose:
       - 5432
     healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "images", "-U", "postgres" ]
+      test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
 volumes:
   db-data:
-
-
+  letsencrypt:
 secrets:
   db-password:
-    file: /db/password.txt
+    file: ~/db/password.txt
