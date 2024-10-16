@@ -6,42 +6,17 @@ services:
     container_name: norasil-images
     ports:
       - "8080:8080"
-    secrets:
-      - db-password
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=images
-      - POSTGRES_PORT=5432
-      - POSTGRES_SSLMODE=disable
+      - DATABASE_URL=postgresql://postgres:secret@db:5432/images?sslmode=disable
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   db:
-    image: postgres:latest
-    restart: always
-    container_name: norasil-db
-    secrets:
-      - db-password
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    image: postgres:16-alpine
+    container_name: norasil-images-db
     environment:
       - POSTGRES_DB=images
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    expose:
-      - 5432
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "images", "-U", "postgres" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  db-data:
-
-
-secrets:
-  db-password:
-    file: /db/password.txt
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - "5432:5432"
