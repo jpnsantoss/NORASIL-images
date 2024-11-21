@@ -39,21 +39,6 @@ router.post("/upload", async (c) => {
   return c.json({ message: "No file uploaded" }, 400);
 });
 
-// Fetch an image by key
-router.get("/:key", async (c) => {
-  const key = c.req.param("key");
-  const image = await prisma.image.findUnique({
-    where: { key },
-  });
-
-  if (image) {
-    const fullUrl = `${baseUrl}/${image.url}`;
-    return c.json({ ...image, url: fullUrl });
-  }
-
-  return c.json({ message: "Image not found" }, 404);
-});
-
 // Delete an image by key
 router.delete("/:key", async (c) => {
   const key = c.req.param("key");
