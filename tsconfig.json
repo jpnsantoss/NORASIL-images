@@ -11,9 +11,7 @@
     "baseUrl": "./",
     "paths": {
       "*": ["node_modules/*"]
-    },
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

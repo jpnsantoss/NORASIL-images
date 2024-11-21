@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
 import { promises as fs } from "fs";
 import { Hono } from "hono";
-import { optimizeImage } from "../utils/imageOptimizer.ts";
+import { optimizeImage } from "../utils/imageOptimizer";
 
 config(); // Load environment variables
 
