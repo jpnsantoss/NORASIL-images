@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: Construction Image Upload API
+  version: 1.0.0
+  description: API for uploading and managing images related to construction builds
+
+servers:
+  - url: https://api.norasil.pt
+
+tags:
+  - name: Build Images
+    description: Endpoints related to images of construction builds
+  - name: General Images
+    description: Endpoints related to general images
+
+paths:
+  /images/builds/upload:
+    post:
+      tags:
+        - Build Images
+      summary: Upload an image related to a construction build
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                build_id:
+                  type: string
+                  description: Optional ID of the construction build
+                image:
+                  type: string
+                  format: binary
+                  description: Image file to upload
+      responses:
+        '200':
+          description: Image uploaded successfully
+        '400':
+          description: Bad request
+
+  /images/upload:
+    post:
+      tags:
+        - General Images
+      summary: Upload a general image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: Image file to upload
+      responses:
+        '200':
+          description: Image uploaded successfully
+        '400':
+          description: Bad request
+
+  /images/builds/{id}:
+    get:
+      tags:
+        - Build Images
+      summary: Fetch all images from a build
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the construction build
+      responses:
+        '200':
+          description: List of images
+        '404':
+          description: Build not found
+
+  /images/{id}:
+    get:
+      tags:
+        - General Images
+      summary: Fetch an image by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the image
+      responses:
+        '200':
+          description: Image file
+        '404':
+          description: Image not found
