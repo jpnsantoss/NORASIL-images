@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
 import { promises as fs } from "fs";
 import { Hono } from "hono";
-import { optimizeImage } from "../utils/imageOptimizer.ts";
+import { optimizeImage } from "../utils/imageOptimizer";
 
 config(); // Load environment variables
 
@@ -37,39 +37,6 @@ router.post("/upload", async (c) => {
   }
 
   return c.json({ message: "No file uploaded" }, 400);
-});
-
-// Fetch an image by key
-router.get("/:key", async (c) => {
-  const key = c.req.param("key");
-  const image = await prisma.image.findUnique({
-    where: { key },
-  });
-
-  if (image) {
-    const fullUrl = `${baseUrl}/${image.url}`;
-    return c.json({ ...image, url: fullUrl });
-  }
-
-  return c.json({ message: "Image not found" }, 404);
-});
-
-// Delete an image by key
-router.delete("/:key", async (c) => {
-  const key = c.req.param("key");
-  const image = await prisma.image.findUnique({
-    where: { key },
-  });
-
-  if (image) {
-    await prisma.image.delete({
-      where: { key },
-    });
-    await fs.unlink(image.url);
-    return c.json({ message: "Image deleted successfully" });
-  }
-
-  return c.json({ message: "Image not found" }, 404);
 });
 
 export default router;
